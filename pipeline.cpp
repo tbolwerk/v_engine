@@ -79,26 +79,18 @@ namespace v_engine
         vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
         vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
 
-
-        VkPipelineViewportStateCreateInfo viewportInfo{};
-        viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-        viewportInfo.viewportCount = 1;
-        viewportInfo.pViewports = &configInfo.viewport;
-        viewportInfo.scissorCount = 1;
-        viewportInfo.pScissors = &configInfo.scissor;
-
         VkGraphicsPipelineCreateInfo pipelineInfo{};
         pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
         pipelineInfo.stageCount = 2;
         pipelineInfo.pStages = shaderStages;
         pipelineInfo.pVertexInputState = &vertexInputInfo;
         pipelineInfo.pInputAssemblyState = &configInfo.inputAssemblyInfo;
-        pipelineInfo.pViewportState = &viewportInfo;
+        pipelineInfo.pViewportState = &configInfo.viewportInfo;
         pipelineInfo.pRasterizationState = &configInfo.rasterizationInfo;
         pipelineInfo.pMultisampleState = &configInfo.multisampleInfo;
         pipelineInfo.pColorBlendState = &configInfo.colorBlendInfo;
         pipelineInfo.pDepthStencilState = &configInfo.depthStencilInfo;
-        pipelineInfo.pDynamicState = nullptr;
+        pipelineInfo.pDynamicState = &configInfo.dynamicStateInfo;
 
         pipelineInfo.layout = configInfo.pipelineLayout;
         pipelineInfo.renderPass = configInfo.renderPass;
@@ -134,9 +126,8 @@ namespace v_engine
         vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
     }
 
-    PipelineConfigInfo Pipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height)
+    void Pipeline::defaultPipelineConfigInfo(PipelineConfigInfo &configInfo)
     {
-        PipelineConfigInfo configInfo{};
         configInfo.inputAssemblyInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
         // This indicates to the input assembler we want to draw a triangle, instead for example a line.
         // when the assembler receives 3 vertices: vec2(a,b), vec2(c,d), vec2(e,f)
@@ -144,25 +135,6 @@ namespace v_engine
         // When using a line list it will draw lines between: ab -> cd -> ef
         configInfo.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
         configInfo.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
-
-
-        // Viewport transformation from the vulkan positions to the viewport cordinate system. 
-        // Vulkan uses (-1.0, -1.0) (-1.0, 1.0)
-        //             ( 1.0, -1.0)  ( 1.0, 1.0)
-
-        // Viewport uses (0.0, 0.0) (WIDTH, 0.0)
-        //              (HEIGHT,0.0) (WIDTH, HEIGHT)
-        configInfo.viewport.x = 0.0f;
-        configInfo.viewport.y = 0.0f;
-        configInfo.viewport.width = static_cast<float>(width);
-        configInfo.viewport.height = static_cast<float>(height);
-        configInfo.viewport.minDepth = 0.0f;
-        configInfo.viewport.maxDepth = 1.0f;
-
-
-        // Cuts off all pixels outside of the view from (0,0) -> (WIDTH, HEIGHT) *hence the name scissor
-        configInfo.scissor.offset = {0, 0};
-        configInfo.scissor.extent = {width, height};
 
         // The process of breaking up the geometry of the vertices and creating pixels/fragments and blending any overlapping fragments.
         configInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
@@ -221,7 +193,11 @@ namespace v_engine
         configInfo.depthStencilInfo.front = {}; // Optional
         configInfo.depthStencilInfo.back = {};  // Optional
 
-        return configInfo;
+        configInfo.dynamicStateEnables = {VK_DYNAMIC_STATE_VIEWPORT, VK_DYNAMIC_STATE_SCISSOR};
+        configInfo.dynamicStateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
+        configInfo.dynamicStateInfo.pDynamicStates = configInfo.dynamicStateEnables.data();
+        configInfo.dynamicStateInfo.dynamicStateCount = static_cast<uint32_t>(configInfo.dynamicStateEnables.size());
+        configInfo.dynamicStateInfo.flags = 0;
     }
 
 }

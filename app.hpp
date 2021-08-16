@@ -25,7 +25,7 @@ namespace v_engine
     private:
         Window window{WIDTH, HEIGHT, "Hello vulkan!"};
         Device device{window};
-        SwapChain swapChain{device, window.getExtent()};
+        std::unique_ptr<SwapChain> swapChain;
         std::unique_ptr<Pipeline> pipeline;
         VkPipelineLayout pipelineLayout;
         std::vector<VkCommandBuffer> commandBuffers;
@@ -34,7 +34,10 @@ namespace v_engine
         void createPipelineLayout();
         void createPipeline();
         void createCommandBuffer();
+        void freeCommandBuffers();
         void drawFrame();
         void loadModels();
+        void recreateSwapChain();
+        void recordCommandBuffer(int imageIndex);
     };
 }
