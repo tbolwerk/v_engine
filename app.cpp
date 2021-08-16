@@ -2,6 +2,7 @@
 
 #include <stdexcept>
 #include <array>
+#include <iostream>
 #include <vector>
 
 namespace v_engine
@@ -25,6 +26,7 @@ namespace v_engine
         {
             glfwPollEvents();
             drawFrame();
+            std::cout << "maxPushConstantSize = " << device.properties.limits.maxPushConstantsSize << std::endl;
         }
 
         vkDeviceWaitIdle(device.device());
@@ -173,7 +175,7 @@ namespace v_engine
             if(swapChain->imageCount() != commandBuffers.size())
             {
                 freeCommandBuffers();
-                createCommandBuffers();
+                createCommandBuffer();
             }
         }
         // If render pass is compatible do nothing
