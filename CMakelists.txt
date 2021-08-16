@@ -19,6 +19,15 @@ endif (VULKAN_FOUND)
 FILE(GLOB glslc-folders ${VULKAN_SDK}/bin)
 FIND_PROGRAM(GLSLC glslc HINTS ${glslc-folders})
 
+find_package(GLM REQUIRED)
+include_directories(${GLM_INCLUDE_DIRS})
+link_directories(${GLM_LIBRARY_DIRS})
+add_definitions(${GLM_DEFINITIONS})
+
+if(NOT GLM_FOUND)
+        message(Error "GLM not found")
+endif(NOT GLM_FOUND)
+
 IF(GLSLC)
 	SET(SHADER_DIR "shaders")
 	SET(SHADER_FILES ${SHADER_DIR}/*.frag ${SHADER_DIR}/*.vert ${SHADER_DIR}/*.geom  ${SHADER_DIR}/*.comp)

@@ -6,7 +6,8 @@
                 "/usr/local/**",
                 "${workspaceFolder}/**",
                 "/usr/local/Cellar/glfw/3.3.4/include",
-                "/usr/local/Cellar/vulkan-headers/1.2.185/include"
+                "/usr/local/Cellar/vulkan-headers/1.2.185/include",
+                "/usr/local/Cellar/glm/0.9.9.8/include"
             ],
             "defines": [],
             "macFrameworkPath": [
