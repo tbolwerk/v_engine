@@ -23,6 +23,8 @@ namespace v_engine
             glfwPollEvents();
             drawFrame();
         }
+
+        vkDeviceWaitIdle(device.device());
     }
     void App::createPipelineLayout()
     {
@@ -42,7 +44,7 @@ namespace v_engine
         auto pipelineConfig = Pipeline::defaultPipelineConfigInfo(swapChain.width(), swapChain.height());
         pipelineConfig.renderPass = swapChain.getRenderPass();
         pipelineConfig.pipelineLayout = pipelineLayout;
-        pipeline = std::make_unique<Pipeline>(device, pipelineConfig, "../shaders/simple_shader.vert.spv", "../shaders/simple_shader.frag.spv");
+        pipeline = std::make_unique<Pipeline>(device, pipelineConfig, "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv");
     }
     void App::createCommandBuffer()
     {
