@@ -1,0 +1,217 @@
+-- Found Vulkan, Including and Linking now
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/twanbolwerk/Documents/dev/game-engine/build
+[ 10%] Compiling /Users/twanbolwerk/Documents/dev/game-engine/shaders/simple_shader.vert
+available extensions:
+	VK_KHR_device_group_creation
+	VK_KHR_external_fence_capabilities
+	VK_KHR_external_memory_capabilities
+	VK_KHR_external_semaphore_capabilities
+	VK_KHR_get_physical_device_properties2
+	VK_KHR_get_surface_capabilities2
+	VK_KHR_surface
+	VK_EXT_debug_report
+	VK_EXT_debug_utils
+	VK_EXT_metal_surface
+	VK_EXT_swapchain_colorspace
+	VK_MVK_macos_surface
+required extensions:
+	VK_KHR_surface
+	VK_EXT_metal_surface
+	VK_EXT_debug_utils
+Device count: 2
+physical device: AMD Radeon Pro 5500M
+Present mode: V-Sync
+Vertex shader fileSize: 1224
+Vertex fragment filesize: 756
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096
+maxPushConstantSize = 4096

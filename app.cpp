@@ -1,5 +1,9 @@
 #include "app.hpp"
 
+#define GLM_FORCE_RADIANS
+#define GLM_FORCE_DEPTH_ZERO_TO_ONE
+#include <glm/glm.hpp>
+
 #include <stdexcept>
 #include <array>
 #include <iostream>
@@ -7,12 +11,18 @@
 
 namespace v_engine
 {
+    struct SimplePushConstantData // Temporary
+    {
+        glm::vec2 offset;
+        alignas(16) glm::vec3 color;
+    };
+
     App::App()
     {
         loadModels();
         createPipelineLayout();
         recreateSwapChain();
-        createCommandBuffer();
+        createCommandBuffers();
     }
 
     App::~App()
@@ -22,11 +32,12 @@ namespace v_engine
 
     void App::run()
     {
+            std::cout << "maxPushConstantSize = " << device.properties.limits.maxPushConstantsSize << std::endl;
+
         while (!window.shouldClose())
         {
             glfwPollEvents();
             drawFrame();
-            std::cout << "maxPushConstantSize = " << device.properties.limits.maxPushConstantsSize << std::endl;
         }
 
         vkDeviceWaitIdle(device.device());
@@ -66,12 +77,17 @@ namespace v_engine
 
     void App::createPipelineLayout()
     {
+        VkPushConstantRange pushConstantRange{};
+        pushConstantRange.stageFlags = VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT;
+        pushConstantRange.offset = 0;
+        pushConstantRange.size = sizeof(SimplePushConstantData);
+
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipelineLayoutInfo.setLayoutCount = 0;
         pipelineLayoutInfo.pSetLayouts = nullptr;
-        pipelineLayoutInfo.pushConstantRangeCount = 0;
-        pipelineLayoutInfo.pPushConstantRanges = nullptr;
+        pipelineLayoutInfo.pushConstantRangeCount = 1;
+        pipelineLayoutInfo.pPushConstantRanges = &pushConstantRange;
         if (vkCreatePipelineLayout(device.device(), &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS)
         {
             throw std::runtime_error("ERROR: Pipeline layout creation failed");
@@ -85,7 +101,7 @@ namespace v_engine
         pipelineConfig.pipelineLayout = pipelineLayout;
         pipeline = std::make_unique<Pipeline>(device, pipelineConfig, "shaders/simple_shader.vert.spv", "shaders/simple_shader.frag.spv");
     }
-    void App::createCommandBuffer()
+    void App::createCommandBuffers()
     {
         commandBuffers.resize(swapChain->imageCount());
         VkCommandBufferAllocateInfo allocInfo{};
@@ -108,8 +124,12 @@ namespace v_engine
 
     void App::recordCommandBuffer(int imageIndex)
     {
+        static int frame = 0;
+        frame = (frame + 1) % 1000;
+
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        
 
         if (vkBeginCommandBuffer(commandBuffers[imageIndex], &beginInfo) != VK_SUCCESS)
         {
@@ -146,7 +166,16 @@ namespace v_engine
 
         pipeline->bind(commandBuffers[imageIndex]);
         model->bind(commandBuffers[imageIndex]);
-        model->draw(commandBuffers[imageIndex]);
+
+        for (int j = 0; j < 4; j++)
+        {
+            SimplePushConstantData push{};
+            push.offset = {-0.5f + frame * 0.002f, -0.4f + j * 0.25f};
+            push.color = {0.2f + 0.2f * j,0.0f, 0.0f};
+
+            vkCmdPushConstants(commandBuffers[imageIndex], pipelineLayout, VK_SHADER_STAGE_VERTEX_BIT | VK_SHADER_STAGE_FRAGMENT_BIT, 0, sizeof(SimplePushConstantData), &push);
+            model->draw(commandBuffers[imageIndex]);
+        }
 
         vkCmdEndRenderPass(commandBuffers[imageIndex]);
         if (vkEndCommandBuffer(commandBuffers[imageIndex]) != VK_SUCCESS)
@@ -172,10 +201,10 @@ namespace v_engine
         else
         {
             swapChain = std::make_unique<SwapChain>(device, extent, std::move(swapChain));
-            if(swapChain->imageCount() != commandBuffers.size())
+            if (swapChain->imageCount() != commandBuffers.size())
             {
                 freeCommandBuffers();
-                createCommandBuffer();
+                createCommandBuffers();
             }
         }
         // If render pass is compatible do nothing

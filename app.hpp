@@ -23,7 +23,7 @@ namespace v_engine
         void run();
 
     private:
-        Window window{WIDTH, HEIGHT, "Hello vulkan!"};
+        Window window{WIDTH, HEIGHT, "Hello Tessa!"};
         Device device{window};
         std::unique_ptr<SwapChain> swapChain;
         std::unique_ptr<Pipeline> pipeline;
@@ -33,7 +33,7 @@ namespace v_engine
 
         void createPipelineLayout();
         void createPipeline();
-        void createCommandBuffer();
+        void createCommandBuffers();
         void freeCommandBuffers();
         void drawFrame();
         void loadModels();
