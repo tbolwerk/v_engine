@@ -1,13 +1,12 @@
 # v_engine
 
-## Build
+## Quick start
+chmod +x run.sh
 
-mkdir build
+./run.sh
 
-cd build
-
-cmake ..
+##########
 
 make
 
-./v_engine
+
