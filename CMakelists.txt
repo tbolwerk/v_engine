@@ -15,6 +15,8 @@ if (VULKAN_FOUND)
     include_directories(${Vulkan_INCLUDE_DIRS})
     target_link_libraries (${PROJECT_NAME} ${Vulkan_LIBRARIES} glfw)
 endif (VULKAN_FOUND)
+
+FILE(GLOB glslc-folders ${VULKAN_SDK}/bin)
 FIND_PROGRAM(GLSLC glslc HINTS ${glslc-folders})
 
 IF(GLSLC)
