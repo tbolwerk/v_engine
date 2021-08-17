@@ -24,11 +24,11 @@ struct QueueFamilyIndices {
 
 class Device {
  public:
-// #ifdef NDEBUG
+#ifdef NDEBUG
   const bool enableValidationLayers = false;
-// #else
-  // const bool enableValidationLayers = true;
-// #endif
+#else
+  const bool enableValidationLayers = true;
+#endif
 
   Device(Window &window);
   ~Device();

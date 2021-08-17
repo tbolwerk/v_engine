@@ -1,8 +1,7 @@
 #pragma once
 
 #include "window.hpp"
-#include "pipeline.hpp"
-#include "swap_chain.hpp"
+#include "renderer.hpp"
 #include "game_object.hpp"
 
 #include <memory>
@@ -25,20 +24,9 @@ namespace v_engine
     private:
         Window window{WIDTH, HEIGHT, "Hello Tessa!"};
         Device device{window};
-        std::unique_ptr<SwapChain> swapChain;
-        std::unique_ptr<Pipeline> pipeline;
-        VkPipelineLayout pipelineLayout;
-        std::vector<VkCommandBuffer> commandBuffers;
         std::vector<GameObject> gameObjects;
+        Renderer renderer{window, device};
 
-        void createPipelineLayout();
-        void createPipeline();
-        void createCommandBuffers();
-        void freeCommandBuffers();
-        void drawFrame();
         void loadGameObjects();
-        void recreateSwapChain();
-        void recordCommandBuffer(int imageIndex);
-        void renderGameObjects(VkCommandBuffer commandBuffer);
     };
 }
