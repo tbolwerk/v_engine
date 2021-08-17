@@ -3,7 +3,7 @@
 #include "window.hpp"
 #include "pipeline.hpp"
 #include "swap_chain.hpp"
-#include "model.hpp"
+#include "game_object.hpp"
 
 #include <memory>
 #include <vector>
@@ -29,15 +29,16 @@ namespace v_engine
         std::unique_ptr<Pipeline> pipeline;
         VkPipelineLayout pipelineLayout;
         std::vector<VkCommandBuffer> commandBuffers;
-        std::unique_ptr<Model> model;
+        std::vector<GameObject> gameObjects;
 
         void createPipelineLayout();
         void createPipeline();
         void createCommandBuffers();
         void freeCommandBuffers();
         void drawFrame();
-        void loadModels();
+        void loadGameObjects();
         void recreateSwapChain();
         void recordCommandBuffer(int imageIndex);
+        void renderGameObjects(VkCommandBuffer commandBuffer);
     };
 }
