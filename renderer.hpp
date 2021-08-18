@@ -48,7 +48,7 @@ namespace v_engine
         void recreateSwapChain();
 
         uint32_t currentImageIndex;
-        int currentFrameIndex;
-        bool isFrameStarted;
+        int currentFrameIndex{0};
+        bool isFrameStarted{false};
     };
 }
