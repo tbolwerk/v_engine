@@ -95,5 +95,19 @@ namespace v_engine
         smoothVase.transform.translation = {.5f, .5f, 2.5f};
         smoothVase.transform.scale = {3.f, 1.5f, 3.f};
         gameObjects.push_back(std::move(smoothVase));
+
+        model = Model::createModelFromFile(device, "/Users/twanbolwerk/Documents/dev/game-engine/models/donut.obj");
+        auto donut = GameObject::createGameObject();
+        donut.model = model;
+        donut.transform.translation = {0.f, 1.f, 2.5f};
+        donut.transform.scale = {5.f, 5.f, 5.f};
+        gameObjects.push_back(std::move(donut));
+
+        model = Model::createModelFromFile(device, "/Users/twanbolwerk/Documents/dev/game-engine/models/corona.obj");
+        auto corona = GameObject::createGameObject();
+        corona.model = model;
+        corona.transform.translation = {-1.5f, 1.f, -.05f};
+        corona.transform.scale = {.5f, .5f, .5f};
+        gameObjects.push_back(std::move(corona));
     }
 }
