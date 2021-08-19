@@ -136,6 +136,13 @@ namespace v_engine
         configInfo.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
         configInfo.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
 
+         configInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+  configInfo.viewportInfo.viewportCount = 1;
+  configInfo.viewportInfo.pViewports = nullptr;
+  configInfo.viewportInfo.scissorCount = 1;
+  configInfo.viewportInfo.pScissors = nullptr;
+
+        
         // The process of breaking up the geometry of the vertices and creating pixels/fragments and blending any overlapping fragments.
         configInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
         configInfo.rasterizationInfo.depthClampEnable = VK_FALSE;
