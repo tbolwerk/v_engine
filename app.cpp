@@ -1,4 +1,5 @@
 #include "app.hpp"
+#include "keyboard_movement_controller.hpp"
 #include "camera.hpp"
 #include "simple_render_system.hpp"
 
@@ -11,6 +12,7 @@
 #include <array>
 #include <iostream>
 #include <vector>
+#include <chrono>
 
 namespace v_engine
 {
@@ -29,13 +31,25 @@ namespace v_engine
         std::cout << "maxPushConstantSize = " << device.properties.limits.maxPushConstantsSize << std::endl;
         SimpleRenderSystem simpleRenderSystem{device, renderer.getSwapChainRenderPass()};
         Camera camera{};
+        camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 2.5f));
+
+        auto viewerObject = GameObject::createGameObject();
+        KeyboardMovementController cameraController{};
+
+        auto currentTime = std::chrono::high_resolution_clock::now();
 
         while (!window.shouldClose())
         {
             glfwPollEvents();
-            
+
+            auto newTime = std::chrono::high_resolution_clock::now();
+            float frameTime = std::chrono::duration<float, std::chrono::seconds::period>(newTime - currentTime).count();
+            currentTime = newTime;
+
+            cameraController.moveInPlaneXZ(window.getGLFWwindow(), frameTime, viewerObject);
+            camera.setViewYXZ(viewerObject.transform.translation, viewerObject.transform.rotation);
+
             float aspect = renderer.getAspectRatio();
-            // camera.setOrthographicProjection(-aspect, aspect, -1, 1, -1, 1);
             camera.setPerspectiveProjection(glm::radians(50.f), aspect, .1f, 10.f);
 
             if (auto commandBuffer = renderer.beginFrame())
