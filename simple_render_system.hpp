@@ -1,5 +1,6 @@
 #pragma once
 
+#include "camera.hpp"
 #include "pipeline.hpp"
 #include "game_object.hpp"
 
@@ -16,7 +17,7 @@ namespace v_engine
         SimpleRenderSystem(const SimpleRenderSystem &) = delete;
         SimpleRenderSystem &operator=(const SimpleRenderSystem &) = delete;
 
-        void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<GameObject> &gameObjects);
+        void renderGameObjects(VkCommandBuffer commandBuffer, std::vector<GameObject> &gameObjects,const Camera &camera);
 
     private:
         std::unique_ptr<Pipeline> pipeline;

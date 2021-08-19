@@ -14,8 +14,8 @@ namespace v_engine
 
     Pipeline::~Pipeline()
     {
-        vkDestroyShaderModule(device.device(),vertShaderModule, nullptr);
-        vkDestroyShaderModule(device.device(),fragShaderModule, nullptr);
+        vkDestroyShaderModule(device.device(), vertShaderModule, nullptr);
+        vkDestroyShaderModule(device.device(), fragShaderModule, nullptr);
         vkDestroyPipeline(device.device(), graphicsPipeline, nullptr);
     }
 
@@ -96,13 +96,11 @@ namespace v_engine
         pipelineInfo.renderPass = configInfo.renderPass;
         pipelineInfo.subpass = configInfo.subpass;
 
-
         // Optimization , deriving from previous pipeline can be more performant.
         pipelineInfo.basePipelineIndex = -1;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
-
-        if(vkCreateGraphicsPipelines(device.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS)
+        if (vkCreateGraphicsPipelines(device.device(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &graphicsPipeline) != VK_SUCCESS)
         {
             throw std::runtime_error("ERROR: Failed to create graphics pipeline");
         }
@@ -136,13 +134,12 @@ namespace v_engine
         configInfo.inputAssemblyInfo.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
         configInfo.inputAssemblyInfo.primitiveRestartEnable = VK_FALSE;
 
-         configInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-  configInfo.viewportInfo.viewportCount = 1;
-  configInfo.viewportInfo.pViewports = nullptr;
-  configInfo.viewportInfo.scissorCount = 1;
-  configInfo.viewportInfo.pScissors = nullptr;
+        configInfo.viewportInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+        configInfo.viewportInfo.viewportCount = 1;
+        configInfo.viewportInfo.pViewports = nullptr;
+        configInfo.viewportInfo.scissorCount = 1;
+        configInfo.viewportInfo.pScissors = nullptr;
 
-        
         // The process of breaking up the geometry of the vertices and creating pixels/fragments and blending any overlapping fragments.
         configInfo.rasterizationInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
         configInfo.rasterizationInfo.depthClampEnable = VK_FALSE;
@@ -155,7 +152,6 @@ namespace v_engine
         configInfo.rasterizationInfo.depthBiasConstantFactor = 0.0f; // Optional
         configInfo.rasterizationInfo.depthBiasClamp = 0.0f;          // Optional
         configInfo.rasterizationInfo.depthBiasSlopeFactor = 0.0f;    // Optional
-
 
         // Handling edges of the rasterization, anti-aliasing
         configInfo.multisampleInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
@@ -186,7 +182,6 @@ namespace v_engine
         configInfo.colorBlendInfo.blendConstants[1] = 0.0f; // Optional
         configInfo.colorBlendInfo.blendConstants[2] = 0.0f; // Optional
         configInfo.colorBlendInfo.blendConstants[3] = 0.0f; // Optional
-
 
         // Depth removes fragments behind objects that are closer to the viewport and discard the fragments, making it faster to render.
         configInfo.depthStencilInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
