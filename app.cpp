@@ -64,26 +64,36 @@ namespace v_engine
         vkDeviceWaitIdle(device.device());
     }
 
-
-
     void App::loadGameObjects()
     {
-        std::shared_ptr<Model> coloredCubeModel = Model::createModelFromFile(device, "/Users/twanbolwerk/Documents/dev/game-engine/models/colored_cube.obj");
+        std::shared_ptr<Model> model = Model::createModelFromFile(device, "/Users/twanbolwerk/Documents/dev/game-engine/models/colored_cube.obj");
 
         auto coloredCube = GameObject::createGameObject();
-        coloredCube.model = coloredCubeModel;
-        coloredCube.transform.translation = {.0f, .0f, 2.5f};
-        coloredCube.transform.scale = {.5f, .5f, .5f};
-
+        coloredCube.model = model;
+        coloredCube.transform.translation = {1.5f, 0.2f, 2.5f};
+        coloredCube.transform.scale = {.25f, .25f, .25f};
         gameObjects.push_back(std::move(coloredCube));
 
-        std::shared_ptr<Model> smoothVaseModel = Model::createModelFromFile(device, "/Users/twanbolwerk/Documents/dev/game-engine/models/smooth_vase.obj");
+        model = Model::createModelFromFile(device, "/Users/twanbolwerk/Documents/dev/game-engine/models/cube.obj");
+        auto cube = GameObject::createGameObject();
+        cube.model = model;
+        cube.transform.translation = {-1.5f, 0.2f, 2.5f};
+        cube.transform.scale = {.25f, .25f, .25f};
+        gameObjects.push_back(std::move(cube));
 
+        model =
+            Model::createModelFromFile(device, "/Users/twanbolwerk/Documents/dev/game-engine/models/flat_vase.obj");
+        auto flatVase = GameObject::createGameObject();
+        flatVase.model = model;
+        flatVase.transform.translation = {-.5f, .5f, 2.5f};
+        flatVase.transform.scale = {3.f, 1.5f, 3.f};
+        gameObjects.push_back(std::move(flatVase));
+
+        model = Model::createModelFromFile(device, "/Users/twanbolwerk/Documents/dev/game-engine/models/smooth_vase.obj");
         auto smoothVase = GameObject::createGameObject();
-        smoothVase.model = smoothVaseModel;
-        smoothVase.transform.translation = {1.f, 1.f, 1.f};
-        smoothVase.transform.scale = glm::vec3(3.f);
-
+        smoothVase.model = model;
+        smoothVase.transform.translation = {.5f, .5f, 2.5f};
+        smoothVase.transform.scale = {3.f, 1.5f, 3.f};
         gameObjects.push_back(std::move(smoothVase));
     }
 }

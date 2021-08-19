@@ -11,10 +11,13 @@
 #include <iostream>
 #include <unordered_map>
 
-namespace std{
+namespace std
+{
     template <>
-    struct hash<v_engine::Model::Vertex> {
-        size_t operator()(v_engine::Model::Vertex const &vertex) const{
+    struct hash<v_engine::Model::Vertex>
+    {
+        size_t operator()(v_engine::Model::Vertex const &vertex) const
+        {
             size_t seed = 0;
             v_engine::hashCombine(seed, vertex.position, vertex.color, vertex.normal, vertex.uv);
             return seed;
@@ -156,17 +159,12 @@ namespace v_engine
 
     std::vector<VkVertexInputAttributeDescription> Model::Vertex::getAttributeDescriptions()
     {
-        std::vector<VkVertexInputAttributeDescription> attributeDescription(2);
+        std::vector<VkVertexInputAttributeDescription> attributeDescription{};
 
-        attributeDescription[0].binding = 0;
-        attributeDescription[0].location = 0;
-        attributeDescription[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-        attributeDescription[0].offset = offsetof(Vertex, position);
-
-        attributeDescription[1].binding = 0;
-        attributeDescription[1].location = 1;
-        attributeDescription[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-        attributeDescription[1].offset = offsetof(Vertex, color);
+        attributeDescription.push_back({0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position)});
+        attributeDescription.push_back({1, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, color)});
+        attributeDescription.push_back({2, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, normal)});
+        attributeDescription.push_back({3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv)});
 
         return attributeDescription;
     }
@@ -186,7 +184,7 @@ namespace v_engine
         vertices.clear();
         indices.clear();
 
-std::unordered_map<Vertex, uint32_t> uniqueVertices{};
+        std::unordered_map<Vertex, uint32_t> uniqueVertices{};
         for (const auto &shape : shapes)
         {
             for (const auto &index : shape.mesh.indices)
@@ -201,35 +199,27 @@ std::unordered_map<Vertex, uint32_t> uniqueVertices{};
 
                     };
 
-                    auto colorIndex = 3 * index.vertex_index + 2;
-                    if(colorIndex < attrib.colors.size())
-                    {
-                        vertex.color = {
-                            attrib.colors[colorIndex - 2],
-                            attrib.colors[colorIndex - 1],
-                            attrib.colors[colorIndex - 0]
-                        };
-                    }else{
-                        vertex.color = {1.f, 1.f, 1.f};
-                    }
+                    vertex.color = {
+                        attrib.colors[3 * index.vertex_index + 0],
+                        attrib.colors[3 * index.vertex_index + 1],
+                        attrib.colors[3 * index.vertex_index + 2]};
                 }
                 if (index.normal_index >= 0)
                 {
                     vertex.normal = {
-                        attrib.vertices[3 * index.normal_index + 0],
-                        attrib.vertices[3 * index.normal_index + 1],
-                        attrib.vertices[3 * index.normal_index + 2]
+                        attrib.normals[3 * index.normal_index + 0],
+                        attrib.normals[3 * index.normal_index + 1],
+                        attrib.normals[3 * index.normal_index + 2]
 
                     };
                 }
                 if (index.texcoord_index >= 0)
                 {
                     vertex.uv = {
-                        attrib.vertices[2 * index.texcoord_index + 0],
-                        attrib.vertices[2 * index.texcoord_index + 1]
-                    };
+                        attrib.texcoords[2 * index.texcoord_index + 0],
+                        attrib.texcoords[2 * index.texcoord_index + 1]};
                 }
-                if(uniqueVertices.count(vertex) == 0)
+                if (uniqueVertices.count(vertex) == 0)
                 {
                     uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
                     vertices.push_back(vertex);
