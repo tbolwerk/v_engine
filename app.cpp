@@ -8,6 +8,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
+
+
 #include <stdexcept>
 #include <array>
 #include <iostream>
@@ -67,7 +69,9 @@ namespace v_engine
     void App::loadGameObjects()
     {
         std::shared_ptr<Model> model = Model::createModelFromFile(device, "/Users/twanbolwerk/Documents/dev/game-engine/models/colored_cube.obj");
-
+        for (int i = 0; i < 10; i ++){
+            
+        }
         auto coloredCube = GameObject::createGameObject();
         coloredCube.model = model;
         coloredCube.transform.translation = {1.5f, 0.2f, 2.5f};
@@ -109,5 +113,6 @@ namespace v_engine
         corona.transform.translation = {-1.5f, 1.f, -.05f};
         corona.transform.scale = {.5f, .5f, .5f};
         gameObjects.push_back(std::move(corona));
+    
     }
 }
