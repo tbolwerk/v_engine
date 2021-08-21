@@ -16,17 +16,20 @@ else()
 	endif()
 endif()
 
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-
-add_subdirectory( libs/glfw-3.3.4 )
+FILE(COPY models DESTINATION "${CMAKE_BINARY_DIR}")
 
 AUX_SOURCE_DIRECTORY(. SOURCE_FILES) 
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
+
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+add_subdirectory( libs/glfw-3.3.4 )
 find_package(Vulkan REQUIRED)
+
 
 if (VULKAN_FOUND)
     message(STATUS "Found Vulkan, Including and Linking now")

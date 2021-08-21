@@ -13,6 +13,7 @@
 #include <cstring>
 #include <iostream>
 #include <unordered_map>
+#include <stdexcept>
 
 namespace std
 {
@@ -34,15 +35,15 @@ namespace v_engine
     Model::Model(Device &device, const Model::Builder &builder) : device{device}
     {
         int width = 800, height = 600, channels;
-        createTextureImage("/Users/twanbolwerk/Documents/dev/game-engine/textures/viking_room.png", &width, &height, &channels);
+       // createTextureImage("/Users/twanbolwerk/Documents/dev/game-engine/textures/viking_room.png", &width, &height, &channels);
         createVertexBuffers(builder.vertices);
         createIndexBuffers(builder.indices);
     }
 
     Model::~Model()
     {
-        vkDestroyBuffer(device.device(), textureBuffer, nullptr);
-        vkFreeMemory(device.device(), textureBufferMemory, nullptr);
+       // vkDestroyBuffer(device.device(), textureBuffer, nullptr);
+       // vkFreeMemory(device.device(), textureBufferMemory, nullptr);
 
         vkDestroyBuffer(device.device(), vertexBuffer, nullptr);
         vkFreeMemory(device.device(), vertexBufferMemory, nullptr);
