@@ -22,6 +22,12 @@ AUX_SOURCE_DIRECTORY(. SOURCE_FILES)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
+if (CMAKE_GENERATOR MATCHES "Visual Studio")
+    # Do Visual Studio specific stuff
+	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
+else()
+    # Other stuff
+endif()
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
