@@ -18,6 +18,7 @@ namespace v_engine
         Renderer &operator=(const Renderer &) = delete;
 
         VkRenderPass getSwapChainRenderPass() const { return swapChain->getRenderPass(); }
+        uint32_t getImageCount() const { return swapChain->imageCount(); }
         float getAspectRatio() const {return swapChain->extentAspectRatio(); };
         bool isFrameInProgress() const { return isFrameStarted; }
 

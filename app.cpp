@@ -2,13 +2,16 @@
 #include "keyboard_movement_controller.hpp"
 #include "camera.hpp"
 #include "simple_render_system.hpp"
+#include "gui.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
 
-
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_vulkan.h>
 
 #include <stdexcept>
 #include <array>
@@ -31,6 +34,14 @@ namespace v_engine
     void App::run()
     {
         std::cout << "maxPushConstantSize = " << device.properties.limits.maxPushConstantsSize << std::endl;
+
+        // create imgui, and pass in dependencies
+        GUI gui{
+            window,
+            device,
+            renderer.getSwapChainRenderPass(),
+            renderer.getImageCount()};
+
         SimpleRenderSystem simpleRenderSystem{device, renderer.getSwapChainRenderPass()};
         Camera camera{};
         camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 2.5f));
@@ -55,9 +66,12 @@ namespace v_engine
             camera.setPerspectiveProjection(glm::radians(50.f), aspect, .1f, 10.f);
 
             if (auto commandBuffer = renderer.beginFrame())
-            {
+            {   
+                gui.newFrame();
                 renderer.beginSwapChainRenderPass(commandBuffer);
                 simpleRenderSystem.renderGameObjects(commandBuffer, gameObjects, camera);
+                gui.runExample();
+                gui.render(commandBuffer);
                 renderer.endSwapChainRenderPass(commandBuffer);
                 renderer.endFrame();
             }
@@ -69,8 +83,8 @@ namespace v_engine
     void App::loadGameObjects()
     {
         std::shared_ptr<Model> model = Model::createModelFromFile(device, "models/colored_cube.obj");
-        for (int i = 0; i < 10; i ++){
-            
+        for (int i = 0; i < 10; i++)
+        {
         }
         auto coloredCube = GameObject::createGameObject();
         coloredCube.model = model;
@@ -113,6 +127,5 @@ namespace v_engine
         corona.transform.translation = {-1.5f, 1.f, -.05f};
         corona.transform.scale = {.5f, .5f, .5f};
         gameObjects.push_back(std::move(corona));
-    
     }
 }

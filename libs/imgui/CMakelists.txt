@@ -1,0 +1,3 @@
+file(GLOB SRC_FILES *.cpp *.hpp)
+
+add_library(imgui ${SRC_FILES})
