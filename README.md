@@ -2,7 +2,7 @@
 
 ## Quick start
 
-## For macOS
+## For Unix
 
 ```console
 chmod +x run.sh
