@@ -1,4 +1,6 @@
 #include "window.hpp"
+#include <stdexcept>
+#include <iostream>
 
 namespace v_engine
 {
@@ -28,6 +30,7 @@ namespace v_engine
     {
         if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS)
         {
+            std::cerr << "Failed to create window surface"<< std::endl;
             throw std::runtime_error("ERROR: Failed to create window surface");
         }
     }

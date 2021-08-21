@@ -1,14 +1,35 @@
+if (POLICY CMP0048)
+    cmake_policy(SET CMP0048 NEW)
+endif()
 project(v_engine)
-cmake_minimum_required(VERSION 3.21)
+cmake_minimum_required(VERSION 3.14)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O3 -std=c++17  " )
+
+if(MSVC)
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17 /W4 /O2")
+else()
+	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O3 -std=c++17  " )
+	if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
+		set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
+	else()
+		#Nothing for gcc
+	endif()
+endif()
+
+FILE(COPY models DESTINATION "${CMAKE_BINARY_DIR}")
 
 AUX_SOURCE_DIRECTORY(. SOURCE_FILES) 
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 
+
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+
+add_subdirectory( libs/glfw-3.3.4 )
 find_package(Vulkan REQUIRED)
-find_package(glfw3 3.3 REQUIRED)
+
 
 if (VULKAN_FOUND)
     message(STATUS "Found Vulkan, Including and Linking now")
@@ -19,14 +40,8 @@ endif (VULKAN_FOUND)
 FILE(GLOB glslc-folders ${VULKAN_SDK}/bin)
 FIND_PROGRAM(GLSLC glslc HINTS ${glslc-folders})
 
-find_package(GLM REQUIRED)
-include_directories(${GLM_INCLUDE_DIRS})
-link_directories(${GLM_LIBRARY_DIRS})
-add_definitions(${GLM_DEFINITIONS})
-
-if(NOT GLM_FOUND)
-        message(Error "GLM not found")
-endif(NOT GLM_FOUND)
+add_subdirectory( libs/glm )
+target_link_libraries(${PROJECT_NAME} glm)
 
 IF(GLSLC)
 	SET(SHADER_DIR "shaders")

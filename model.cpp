@@ -1,6 +1,9 @@
 #include "model.hpp"
 #include "utils.hpp"
 
+#define STB_IMAGE_IMPLEMENTATION
+#include "libs/stb_image.h"
+
 #define TINYOBJLOADER_IMPLEMENTATION
 #include "libs/tiny_obj_loader.h"
 #define GLM_ENABLE_EXPERIMENTAL
@@ -10,6 +13,7 @@
 #include <cstring>
 #include <iostream>
 #include <unordered_map>
+#include <stdexcept>
 
 namespace std
 {
@@ -30,12 +34,17 @@ namespace v_engine
 
     Model::Model(Device &device, const Model::Builder &builder) : device{device}
     {
+        int width = 800, height = 600, channels;
+       // createTextureImage("/Users/twanbolwerk/Documents/dev/game-engine/textures/viking_room.png", &width, &height, &channels);
         createVertexBuffers(builder.vertices);
         createIndexBuffers(builder.indices);
     }
 
     Model::~Model()
     {
+       // vkDestroyBuffer(device.device(), textureBuffer, nullptr);
+       // vkFreeMemory(device.device(), textureBufferMemory, nullptr);
+
         vkDestroyBuffer(device.device(), vertexBuffer, nullptr);
         vkFreeMemory(device.device(), vertexBufferMemory, nullptr);
 
@@ -167,6 +176,87 @@ namespace v_engine
         attributeDescription.push_back({3, 0, VK_FORMAT_R32G32_SFLOAT, offsetof(Vertex, uv)});
 
         return attributeDescription;
+    }
+
+    void Model::createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage &image, VkDeviceMemory &imageMemory)
+    {
+        VkImageCreateInfo imageInfo{};
+        imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+        imageInfo.imageType = VK_IMAGE_TYPE_2D;
+        imageInfo.extent.width = width;
+        imageInfo.extent.height = height;
+        imageInfo.extent.depth = 1;
+        imageInfo.mipLevels = 1;
+        imageInfo.arrayLayers = 1;
+        imageInfo.format = format;
+        imageInfo.tiling = tiling;
+        imageInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        imageInfo.usage = usage;
+        imageInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageInfo.flags = 0; // Optional
+
+        if (vkCreateImage(device.device(), &imageInfo, nullptr, &image) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to create image!");
+        }
+
+        VkMemoryRequirements memRequirements;
+        vkGetImageMemoryRequirements(device.device(), image, &memRequirements);
+
+        VkMemoryAllocateInfo allocInfo{};
+        allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+        allocInfo.allocationSize = memRequirements.size;
+        allocInfo.memoryTypeIndex = device.findMemoryType(memRequirements.memoryTypeBits, properties);
+
+        if (vkAllocateMemory(device.device(), &allocInfo, nullptr, &textureImageMemory) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to allocate image memory!");
+        }
+
+        vkBindImageMemory(device.device(), image, imageMemory, 0);
+    }
+
+    void Model::createTextureImage(const std::string &filePath, int *width, int *height, int *channels)
+    {
+        textureSize = static_cast<uint32_t>(*width * *height);
+        stbi_uc *pixels = stbi_load(filePath.c_str(), width, height, channels, STBI_rgb_alpha);
+        VkDeviceSize bufferSize = *width * *height * 4;
+        if (!pixels)
+        {
+            throw std::runtime_error("ERROR: Failed to load texture image");
+        }
+
+        VkBuffer stagingBuffer;
+        VkDeviceMemory stagingBufferMemory;
+
+        device.createBuffer(
+            bufferSize,
+            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+            stagingBuffer,
+            stagingBufferMemory);
+
+        void *data;
+        vkMapMemory(device.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
+        memcpy(data, pixels, static_cast<size_t>(bufferSize));
+        vkUnmapMemory(device.device(), stagingBufferMemory);
+
+        device.createBuffer(
+            bufferSize,
+            VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, // most optimal memory on device
+            textureBuffer,
+            textureBufferMemory);
+
+        device.copyBuffer(stagingBuffer, textureBuffer, bufferSize);
+
+        vkDestroyBuffer(device.device(), stagingBuffer, nullptr);
+        vkFreeMemory(device.device(), stagingBufferMemory, nullptr);
+
+        stbi_image_free(pixels);
+
+        createImage(static_cast<uint32_t>(*width), static_cast<uint32_t>(*height), VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
     }
 
     void Model::Builder::loadModel(const std::string &filePath)

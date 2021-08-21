@@ -22,7 +22,7 @@ namespace v_engine
         void run();
 
     private:
-        Window window{WIDTH, HEIGHT, "Hello Tessa!"};
+        Window window{WIDTH, HEIGHT, "V_ENGINE"};
         Device device{window};
         std::vector<GameObject> gameObjects;
         Renderer renderer{window, device};
