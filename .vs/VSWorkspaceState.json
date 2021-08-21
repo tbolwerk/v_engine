@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\libs\\glfw-3.3.4",
+    "\\libs\\glfw-3.3.4\\CMake",
+    "\\libs\\glfw-3.3.4\\include\\GLFW",
+    "\\libs\\glfw-3.3.4\\out",
+    "\\libs\\glfw-3.3.4\\out\\build",
+    "\\libs\\glfw-3.3.4\\src",
+    "\\libs\\glm\\cmake",
+    "\\libs\\glm\\glm"
+  ],
+  "SelectedNode": "\\swap_chain.cpp",
+  "PreviewInSolutionExplorer": false
+}
