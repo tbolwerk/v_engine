@@ -23,13 +23,6 @@ AUX_SOURCE_DIRECTORY(. SOURCE_FILES)
 
 
 
-if (CMAKE_GENERATOR MATCHES "Visual Studio")
-    # Do Visual Studio specific stuff
-	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
-	add_dependencies("${PROJECT_NAME}" BuildShaderHeader)
-else()
-    # Other stuff
-endif()
 
 
 # GLFW
@@ -49,6 +42,14 @@ include_directories(${IMGUI_DIR})
 file(GLOB IM_GUI_SOURCES libs/imgui/*.cpp)
 
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} ${IM_GUI_SOURCES})
+
+if (CMAKE_GENERATOR MATCHES "Visual Studio")
+    # Do Visual Studio specific stuff
+	set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${PROJECT_NAME})
+	add_dependencies("${PROJECT_NAME}" BuildShaderHeader)
+else()
+    # Other stuff
+endif()
 
 find_package(Vulkan REQUIRED)
 
