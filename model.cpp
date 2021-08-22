@@ -2,11 +2,15 @@
 #include "utils.hpp"
 
 #define STB_IMAGE_IMPLEMENTATION
+
 #include "libs/stb_image.h"
 
 #define TINYOBJLOADER_IMPLEMENTATION
+
 #include "libs/tiny_obj_loader.h"
+
 #define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/gtx/hash.hpp>
 
 #include <cassert>
@@ -15,13 +19,10 @@
 #include <unordered_map>
 #include <stdexcept>
 
-namespace std
-{
-    template <>
-    struct hash<v_engine::Model::Vertex>
-    {
-        size_t operator()(v_engine::Model::Vertex const &vertex) const
-        {
+namespace std {
+    template<>
+    struct hash<v_engine::Model::Vertex> {
+        size_t operator()(v_engine::Model::Vertex const &vertex) const {
             size_t seed = 0;
             v_engine::hashCombine(seed, vertex.position, vertex.color, vertex.normal, vertex.uv);
             return seed;
@@ -29,42 +30,35 @@ namespace std
     };
 }
 
-namespace v_engine
-{
+namespace v_engine {
 
-    Model::Model(Device &device, const Model::Builder &builder) : device{device}
-    {
-        int width = 800, height = 600, channels;
-       // createTextureImage("/Users/twanbolwerk/Documents/dev/game-engine/textures/viking_room.png", &width, &height, &channels);
+    Model::Model(Device &device, const Model::Builder &builder) : device{device} {
+        createTextureImage("textures/viking_room.png");
         createVertexBuffers(builder.vertices);
         createIndexBuffers(builder.indices);
     }
 
-    Model::~Model()
-    {
-       // vkDestroyBuffer(device.device(), textureBuffer, nullptr);
-       // vkFreeMemory(device.device(), textureBufferMemory, nullptr);
+    Model::~Model() {
+        vkDestroyImage(device.device(), textureImage, nullptr);
+        vkFreeMemory(device.device(), textureImageMemory, nullptr);
 
         vkDestroyBuffer(device.device(), vertexBuffer, nullptr);
         vkFreeMemory(device.device(), vertexBufferMemory, nullptr);
 
-        if (hasIndexBuffer)
-        {
+        if (hasIndexBuffer) {
             vkDestroyBuffer(device.device(), indexBuffer, nullptr);
             vkFreeMemory(device.device(), indexBufferMemory, nullptr);
         }
     }
 
-    std::unique_ptr<Model> Model::createModelFromFile(Device &device, const std::string &filePath)
-    {
+    std::unique_ptr<Model> Model::createModelFromFile(Device &device, const std::string &filePath) {
         Builder builder{};
         builder.loadModel(filePath);
         std::cout << "Vertex count: " << builder.vertices.size() << std::endl;
         return std::make_unique<Model>(device, builder);
     }
 
-    void Model::createVertexBuffers(const std::vector<Vertex> &vertices)
-    {
+    void Model::createVertexBuffers(const std::vector<Vertex> &vertices) {
         vertexCount = static_cast<uint32_t>(vertices.size());
         assert(vertexCount >= 3 && "Vertex count must be atleast 3");
         VkDeviceSize bufferSize = (sizeof(vertices[0]) * vertexCount);
@@ -73,11 +67,11 @@ namespace v_engine
         VkDeviceMemory stagingBufferMemory;
 
         device.createBuffer(
-            bufferSize,
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-            stagingBuffer,
-            stagingBufferMemory);
+                bufferSize,
+                VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                stagingBuffer,
+                stagingBufferMemory);
 
         void *data;
         vkMapMemory(device.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
@@ -85,11 +79,11 @@ namespace v_engine
         vkUnmapMemory(device.device(), stagingBufferMemory);
 
         device.createBuffer(
-            bufferSize,
-            VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, // most optimal memory on device
-            vertexBuffer,
-            vertexBufferMemory);
+                bufferSize,
+                VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, // most optimal memory on device
+                vertexBuffer,
+                vertexBufferMemory);
 
         device.copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
 
@@ -97,12 +91,10 @@ namespace v_engine
         vkFreeMemory(device.device(), stagingBufferMemory, nullptr);
     }
 
-    void Model::createIndexBuffers(const std::vector<uint32_t> &indices)
-    {
+    void Model::createIndexBuffers(const std::vector<uint32_t> &indices) {
         indexCount = static_cast<uint32_t>(indices.size());
         hasIndexBuffer = indexCount > 0;
-        if (!hasIndexBuffer)
-        {
+        if (!hasIndexBuffer) {
             return;
         }
         VkDeviceSize bufferSize = (sizeof(indices[0]) * indexCount);
@@ -110,11 +102,11 @@ namespace v_engine
         VkDeviceMemory stagingBufferMemory;
 
         device.createBuffer(
-            bufferSize,
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-            stagingBuffer,
-            stagingBufferMemory);
+                bufferSize,
+                VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
+                stagingBuffer,
+                stagingBufferMemory);
 
         void *data;
         vkMapMemory(device.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
@@ -122,11 +114,11 @@ namespace v_engine
         vkUnmapMemory(device.device(), stagingBufferMemory);
 
         device.createBuffer(
-            bufferSize,
-            VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, // most optimal memory on device
-            indexBuffer,
-            indexBufferMemory);
+                bufferSize,
+                VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
+                VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, // most optimal memory on device
+                indexBuffer,
+                indexBufferMemory);
 
         device.copyBuffer(stagingBuffer, indexBuffer, bufferSize);
 
@@ -134,31 +126,25 @@ namespace v_engine
         vkFreeMemory(device.device(), stagingBufferMemory, nullptr);
     }
 
-    void Model::bind(VkCommandBuffer commandBuffer)
-    {
+    void Model::bind(VkCommandBuffer commandBuffer) {
         VkBuffer buffers[] = {vertexBuffer};
         VkDeviceSize offsets[] = {0};
         vkCmdBindVertexBuffers(commandBuffer, 0, 1, buffers, offsets);
 
-        if (hasIndexBuffer)
-        {
+        if (hasIndexBuffer) {
             vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT32);
         }
     }
-    void Model::draw(VkCommandBuffer commandBuffer)
-    {
-        if (hasIndexBuffer)
-        {
+
+    void Model::draw(VkCommandBuffer commandBuffer) {
+        if (hasIndexBuffer) {
             vkCmdDrawIndexed(commandBuffer, indexCount, 1, 0, 0, 0);
-        }
-        else
-        {
+        } else {
             vkCmdDraw(commandBuffer, vertexCount, 1, 0, 0);
         }
     }
 
-    std::vector<VkVertexInputBindingDescription> Model::Vertex::getBindingDescriptions()
-    {
+    std::vector<VkVertexInputBindingDescription> Model::Vertex::getBindingDescriptions() {
         std::vector<VkVertexInputBindingDescription> bindingDescriptions(1);
         bindingDescriptions[0].binding = 0;
         bindingDescriptions[0].stride = sizeof(Vertex);
@@ -166,8 +152,7 @@ namespace v_engine
         return bindingDescriptions;
     }
 
-    std::vector<VkVertexInputAttributeDescription> Model::Vertex::getAttributeDescriptions()
-    {
+    std::vector<VkVertexInputAttributeDescription> Model::Vertex::getAttributeDescriptions() {
         std::vector<VkVertexInputAttributeDescription> attributeDescription{};
 
         attributeDescription.push_back({0, 0, VK_FORMAT_R32G32B32_SFLOAT, offsetof(Vertex, position)});
@@ -178,8 +163,9 @@ namespace v_engine
         return attributeDescription;
     }
 
-    void Model::createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage &image, VkDeviceMemory &imageMemory)
-    {
+    void
+    Model::createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage,
+                       VkMemoryPropertyFlags properties, VkImage &image, VkDeviceMemory &imageMemory) {
         VkImageCreateInfo imageInfo{};
         imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
         imageInfo.imageType = VK_IMAGE_TYPE_2D;
@@ -196,8 +182,7 @@ namespace v_engine
         imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
         imageInfo.flags = 0; // Optional
 
-        if (vkCreateImage(device.device(), &imageInfo, nullptr, &image) != VK_SUCCESS)
-        {
+        if (vkCreateImage(device.device(), &imageInfo, nullptr, &image) != VK_SUCCESS) {
             throw std::runtime_error("failed to create image!");
         }
 
@@ -209,65 +194,57 @@ namespace v_engine
         allocInfo.allocationSize = memRequirements.size;
         allocInfo.memoryTypeIndex = device.findMemoryType(memRequirements.memoryTypeBits, properties);
 
-        if (vkAllocateMemory(device.device(), &allocInfo, nullptr, &textureImageMemory) != VK_SUCCESS)
-        {
+        if (vkAllocateMemory(device.device(), &allocInfo, nullptr, &textureImageMemory) != VK_SUCCESS) {
             throw std::runtime_error("failed to allocate image memory!");
         }
 
         vkBindImageMemory(device.device(), image, imageMemory, 0);
     }
 
-    void Model::createTextureImage(const std::string &filePath, int *width, int *height, int *channels)
-    {
-        textureSize = static_cast<uint32_t>(*width * *height);
-        stbi_uc *pixels = stbi_load(filePath.c_str(), width, height, channels, STBI_rgb_alpha);
-        VkDeviceSize bufferSize = *width * *height * 4;
-        if (!pixels)
-        {
+    void Model::createTextureImage(const std::string &filePath) {
+        int width, height, channels;
+        stbi_uc *pixels = stbi_load(filePath.c_str(), &width, &height, &channels, STBI_rgb_alpha);
+
+        VkDeviceSize imageSize = width * height * 4;
+        if (!pixels) {
             throw std::runtime_error("ERROR: Failed to load texture image");
         }
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
 
-        device.createBuffer(
-            bufferSize,
-            VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
-            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
-            stagingBuffer,
-            stagingBufferMemory);
+        device.createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT,
+                            VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer,
+                            stagingBufferMemory);
 
         void *data;
-        vkMapMemory(device.device(), stagingBufferMemory, 0, bufferSize, 0, &data);
-        memcpy(data, pixels, static_cast<size_t>(bufferSize));
+        vkMapMemory(device.device(), stagingBufferMemory, 0, imageSize, 0, &data);
+        memcpy(data, pixels, static_cast<size_t>(imageSize));
         vkUnmapMemory(device.device(), stagingBufferMemory);
-
-        device.createBuffer(
-            bufferSize,
-            VK_BUFFER_USAGE_INDEX_BUFFER_BIT | VK_BUFFER_USAGE_TRANSFER_DST_BIT,
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, // most optimal memory on device
-            textureBuffer,
-            textureBufferMemory);
-
-        device.copyBuffer(stagingBuffer, textureBuffer, bufferSize);
-
-        vkDestroyBuffer(device.device(), stagingBuffer, nullptr);
-        vkFreeMemory(device.device(), stagingBufferMemory, nullptr);
 
         stbi_image_free(pixels);
 
-        createImage(static_cast<uint32_t>(*width), static_cast<uint32_t>(*height), VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
+        createImage(static_cast<uint32_t>(width), static_cast<uint32_t>(height), VK_FORMAT_R8G8B8A8_SRGB,
+                    VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT,
+                    VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
+
+        device.transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED,
+                                     VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+        device.copyBufferToImage(stagingBuffer, textureImage, static_cast<uint32_t>(width),
+                                 static_cast<uint32_t>(height), 1);
+        device.transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                                     VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        vkDestroyBuffer(device.device(), stagingBuffer, nullptr);
+        vkFreeMemory(device.device(), stagingBufferMemory, nullptr);
     }
 
-    void Model::Builder::loadModel(const std::string &filePath)
-    {
+    void Model::Builder::loadModel(const std::string &filePath) {
         tinyobj::attrib_t attrib;
         std::vector<tinyobj::shape_t> shapes;
         std::vector<tinyobj::material_t> materials;
         std::string warn, err;
 
-        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filePath.c_str()))
-        {
+        if (!tinyobj::LoadObj(&attrib, &shapes, &materials, &warn, &err, filePath.c_str())) {
             throw std::runtime_error(warn + err);
         }
 
@@ -275,42 +252,36 @@ namespace v_engine
         indices.clear();
 
         std::unordered_map<Vertex, uint32_t> uniqueVertices{};
-        for (const auto &shape : shapes)
-        {
-            for (const auto &index : shape.mesh.indices)
-            {
+        for (const auto &shape : shapes) {
+            for (const auto &index : shape.mesh.indices) {
                 Vertex vertex{};
-                if (index.vertex_index >= 0)
-                {
+                if (index.vertex_index >= 0) {
                     vertex.position = {
-                        attrib.vertices[3 * index.vertex_index + 0],
-                        attrib.vertices[3 * index.vertex_index + 1],
-                        attrib.vertices[3 * index.vertex_index + 2]
+                            attrib.vertices[3 * index.vertex_index + 0],
+                            attrib.vertices[3 * index.vertex_index + 1],
+                            attrib.vertices[3 * index.vertex_index + 2]
 
                     };
 
                     vertex.color = {
-                        attrib.colors[3 * index.vertex_index + 0],
-                        attrib.colors[3 * index.vertex_index + 1],
-                        attrib.colors[3 * index.vertex_index + 2]};
+                            attrib.colors[3 * index.vertex_index + 0],
+                            attrib.colors[3 * index.vertex_index + 1],
+                            attrib.colors[3 * index.vertex_index + 2]};
                 }
-                if (index.normal_index >= 0)
-                {
+                if (index.normal_index >= 0) {
                     vertex.normal = {
-                        attrib.normals[3 * index.normal_index + 0],
-                        attrib.normals[3 * index.normal_index + 1],
-                        attrib.normals[3 * index.normal_index + 2]
+                            attrib.normals[3 * index.normal_index + 0],
+                            attrib.normals[3 * index.normal_index + 1],
+                            attrib.normals[3 * index.normal_index + 2]
 
                     };
                 }
-                if (index.texcoord_index >= 0)
-                {
+                if (index.texcoord_index >= 0) {
                     vertex.uv = {
-                        attrib.texcoords[2 * index.texcoord_index + 0],
-                        attrib.texcoords[2 * index.texcoord_index + 1]};
+                            attrib.texcoords[2 * index.texcoord_index + 0],
+                            attrib.texcoords[2 * index.texcoord_index + 1]};
                 }
-                if (uniqueVertices.count(vertex) == 0)
-                {
+                if (uniqueVertices.count(vertex) == 0) {
                     uniqueVertices[vertex] = static_cast<uint32_t>(vertices.size());
                     vertices.push_back(vertex);
                 }

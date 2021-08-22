@@ -4,6 +4,7 @@ endif()
 project(v_engine)
 cmake_minimum_required(VERSION 3.14)
 
+set(CMAKE_CXX_STANDARD 17)
 
 if(MSVC)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17 /W4 /O2")
@@ -49,6 +50,7 @@ if (CMAKE_GENERATOR MATCHES "Visual Studio")
 	add_dependencies("${PROJECT_NAME}" BuildShaderHeader)
 else()
     # Other stuff
+	add_dependencies("${PROJECT_NAME}" BuildShaderHeader)
 endif()
 
 find_package(Vulkan REQUIRED)

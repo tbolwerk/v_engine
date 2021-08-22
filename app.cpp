@@ -127,5 +127,13 @@ namespace v_engine
         corona.transform.translation = {-1.5f, 1.f, -.05f};
         corona.transform.scale = {.5f, .5f, .5f};
         gameObjects.push_back(std::move(corona));
+
+        model = Model::createModelFromFile(device, "models/viking_room.obj");
+        auto vikingRoom = GameObject::createGameObject();
+        vikingRoom.model = model;
+        vikingRoom.transform.translation = {1.5f, 1.f,-.05f};
+        vikingRoom.transform.scale = {1.f,1.f,1.f};
+        vikingRoom.transform.rotation = {1.5708f, 3.14f, 0.0f};
+        gameObjects.push_back(std::move(vikingRoom));
     }
 }

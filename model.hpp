@@ -51,9 +51,6 @@ namespace v_engine
     private:
         Device &device;
 
-        VkBuffer textureBuffer;
-        VkDeviceMemory textureBufferMemory;
-        uint32_t textureSize;
         VkImage textureImage;
         VkDeviceMemory textureImageMemory;
 
@@ -70,6 +67,6 @@ namespace v_engine
         void createIndexBuffers(const std::vector<uint32_t> &indices);
 
         void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage &image, VkDeviceMemory &imageMemory);
-        void createTextureImage(const std::string &filePath, int *width, int *height, int *channels);
+        void createTextureImage(const std::string &filePath);
     };
 }
