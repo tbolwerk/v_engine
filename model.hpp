@@ -51,9 +51,6 @@ namespace v_engine
     private:
         Device &device;
 
-        VkImage textureImage;
-        VkDeviceMemory textureImageMemory;
-
         VkBuffer vertexBuffer;
         VkDeviceMemory vertexBufferMemory;
         uint32_t vertexCount;
@@ -65,8 +62,5 @@ namespace v_engine
 
         void createVertexBuffers(const std::vector<Vertex> &vertices);
         void createIndexBuffers(const std::vector<uint32_t> &indices);
-
-        void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage &image, VkDeviceMemory &imageMemory);
-        void createTextureImage(const std::string &filePath);
     };
 }

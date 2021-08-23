@@ -83,9 +83,7 @@ namespace v_engine
     void App::loadGameObjects()
     {
         std::shared_ptr<Model> model = Model::createModelFromFile(device, "models/colored_cube.obj");
-        for (int i = 0; i < 10; i++)
-        {
-        }
+
         auto coloredCube = GameObject::createGameObject();
         coloredCube.model = model;
         coloredCube.transform.translation = {1.5f, 0.2f, 2.5f};

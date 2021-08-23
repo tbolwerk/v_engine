@@ -83,6 +83,11 @@ class SwapChain {
   std::vector<VkFence> inFlightFences;
   std::vector<VkFence> imagesInFlight;
   size_t currentFrame = 0;
+
+
+
+
+
 };
 
 }  // namespace lve
