@@ -119,7 +119,6 @@ namespace v_engine {
         if (vkCreateSampler(device.device(), &samplerInfo, nullptr, &textureSampler) != VK_SUCCESS) {
             throw std::runtime_error("failed to create texture sampler");
         }
-
     }
 
     void Texture::updateDescriptor() {

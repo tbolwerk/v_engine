@@ -1,8 +1,9 @@
 #include "app.hpp"
-#include "keyboard_movement_controller.hpp"
+#include "movement_controller.hpp"
 #include "camera.hpp"
 #include "simple_render_system.hpp"
 #include "gui.hpp"
+#include "texture.hpp"
 
 #define GLM_FORCE_RADIANS
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
@@ -47,7 +48,8 @@ namespace v_engine
         camera.setViewTarget(glm::vec3(-1.f, -2.f, 2.f), glm::vec3(0.f, 0.f, 2.5f));
 
         auto viewerObject = GameObject::createGameObject();
-        KeyboardMovementController cameraController{};
+        MovementController cameraController{};
+        MovementController::init(window.getGLFWwindow());
 
         auto currentTime = std::chrono::high_resolution_clock::now();
 
@@ -83,6 +85,7 @@ namespace v_engine
     void App::loadGameObjects()
     {
         std::shared_ptr<Model> model = Model::createModelFromFile(device, "models/colored_cube.obj");
+        std::shared_ptr<Texture> texture = Texture::loadTexture(device, "textures/viking_room.png");
 
         auto coloredCube = GameObject::createGameObject();
         coloredCube.model = model;

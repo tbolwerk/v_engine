@@ -3,13 +3,10 @@
 #include "game_object.hpp"
 #include "window.hpp"
 
-namespace v_engine
-{
-    class KeyboardMovementController
-    {
+namespace v_engine {
+    class MovementController {
     public:
-        struct KeyMappings
-        {
+        struct KeyMappings {
             int moveLeft = GLFW_KEY_A;
             int moveRight = GLFW_KEY_D;
             int moveForward = GLFW_KEY_W;
@@ -22,8 +19,14 @@ namespace v_engine
             int lookDown = GLFW_KEY_DOWN;
         };
 
-        void moveInPlaneXZ(GLFWwindow *window, float dt, GameObject &gameObject);
+        struct MousePosition {
+            double x;
+            double y;
+        };
 
+        void moveInPlaneXZ(GLFWwindow *window, float dt, GameObject &gameObject) const;
+        static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+        static void init(GLFWwindow *window);
         KeyMappings keys{};
         float moveSpeed{3.f};
         float lookSpeed{1.5f};

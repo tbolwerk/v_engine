@@ -52,7 +52,7 @@ namespace v_engine {
 
         void createTextureSampler();
 
-        void createTextureImage(const std::string &filePath);
+        void createTextureImage(const std::string &textureFilePath);
 
 
         VkDeviceMemory textureImageMemory;
@@ -61,7 +61,7 @@ namespace v_engine {
         VkImageView textureImageView;
         VkSampler textureSampler;
 
-        VkImageLayout textureLayout;
+        VkImageLayout textureLayout{VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL};
         uint32_t mipLevels{1};
         uint32_t layerCount{1};
     };

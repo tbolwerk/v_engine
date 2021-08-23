@@ -31,15 +31,11 @@ namespace std {
 namespace v_engine {
 
     Model::Model(Device &device, const Model::Builder &builder) : device{device} {
-//        createTextureImage("textures/viking_room.png");
         createVertexBuffers(builder.vertices);
         createIndexBuffers(builder.indices);
     }
 
     Model::~Model() {
-//        vkDestroyImage(device.device(), textureImage, nullptr);
-//        vkFreeMemory(device.device(), textureImageMemory, nullptr);
-
         vkDestroyBuffer(device.device(), vertexBuffer, nullptr);
         vkFreeMemory(device.device(), vertexBufferMemory, nullptr);
 
