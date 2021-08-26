@@ -29,6 +29,7 @@ namespace v_engine {
         static void init(GLFWwindow *window);
         KeyMappings keys{};
         float moveSpeed{3.f};
-        float lookSpeed{1.5f};
+        float keyboardSensitivity{1.5f};
+        float mouseSensitivity{5.5f};
     };
 }

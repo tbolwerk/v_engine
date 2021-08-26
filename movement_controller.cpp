@@ -6,11 +6,12 @@
 namespace v_engine {
     MovementController::MousePosition mousePosition{};
 
-    void MovementController::mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
-    {
-        if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS){
+    void MovementController::mouse_button_callback(GLFWwindow *window, int button, int action, int mods) {
+        if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
             double xPos, yPos;
+
             glfwGetCursorPos(window, &xPos, &yPos);
+
             mousePosition.x = xPos;
             mousePosition.y = yPos;
         }
@@ -30,7 +31,15 @@ namespace v_engine {
             glfwGetCursorPos(window, &xPos, &yPos);
 
             rotate.y -= static_cast<float>(mousePosition.x - xPos);
-            rotate.x -= static_cast<float>(mousePosition.y - yPos);
+            rotate.x += static_cast<float>(mousePosition.y - yPos);
+
+            mousePosition.x = xPos;
+            mousePosition.y = yPos;
+            if (glm::dot(rotate, rotate) >
+                std::numeric_limits<float>::epsilon()) // check if not 0, normalize will fail because of div by 0
+            {
+                gameObject.transform.rotation += mouseSensitivity * dt * glm::normalize(rotate);
+            }
         } else {
             if (glfwGetKey(window, keys.lookRight) == GLFW_PRESS) {
                 rotate.y += 1.f;
@@ -44,12 +53,13 @@ namespace v_engine {
             if (glfwGetKey(window, keys.lookDown) == GLFW_PRESS) {
                 rotate.x -= 1.f;
             }
+            if (glm::dot(rotate, rotate) >
+                std::numeric_limits<float>::epsilon()) // check if not 0, normalize will fail because of div by 0
+            {
+                gameObject.transform.rotation += keyboardSensitivity * dt * glm::normalize(rotate);
+            }
         }
-        if (glm::dot(rotate, rotate) >
-            std::numeric_limits<float>::epsilon()) // check if not 0, normalize will fail because of div by 0
-        {
-            gameObject.transform.rotation += lookSpeed * dt * glm::normalize(rotate);
-        }
+
 
         gameObject.transform.rotation.x = glm::clamp(gameObject.transform.rotation.x, -1.5f, 1.5f);
         gameObject.transform.rotation.y = glm::mod(gameObject.transform.rotation.y,
